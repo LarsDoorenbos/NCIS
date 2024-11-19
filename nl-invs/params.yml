@@ -1,0 +1,30 @@
+
+output_path: "./output_${SLURM_JOB_ID}_${NOW}"
+
+dataset_file: datasets.cifar100
+
+multigpu: no
+mp_loaders: 8
+batch_size: 64
+pca_variance_percentage: 5
+max_epochs: 200
+
+train_fraction: 1.0
+preprocessing: none # [none, center]
+
+optim:
+    name: "Adam"
+    learning_rate: 1.0e-4
+    lr_function: "polynomial"
+    lr_params:
+        power: 1.0     # setting to 1.0 means linear decay
+        min_lr_factor: 0.1 # factor times initial learning rate
+
+num_layers: 4
+channel_mults: [1, 1, 1, 1] # CURRENTLY UNUSED
+
+use_logger: no
+val_freq: 1
+
+load_from: best_checkpoint_156400_negmse=-0.0195.pt
+reg_weight: 1.0e-5
