@@ -106,7 +106,7 @@ if args.load != '':
             net.load_state_dict(remove_data_parallel(torch.load(model_name)))
         print('Model restored!')
     else:
-        print('Model not found!')
+        raise FileNotFoundError('Model not found')
 
 
 net.eval()
