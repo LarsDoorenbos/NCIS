@@ -31,12 +31,12 @@ names = ['Dream-OOD', 'Ours']
 opt = Object()
 
 dirs = [
-    '/home/lars/generated_images_c100_nldream_full/samples'
+    '/home/lars/generated_images_c100/samples'
 ]
 opt.id_data = 'c100'
 
 # dirs = [
-#     '/home/lars/generated_images_in100_nldream_full/samples'
+#     '/home/lars/generated_images_in100/samples'
 # ]
 # opt.id_data = 'in100'
 

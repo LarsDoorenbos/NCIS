@@ -17,10 +17,7 @@ if platform.node() == 'lars-HP-ENVY-Laptop-15-ep0xxx':
 else:
     sys.path.append('/storage/homefs/ld20d359/nonlinear-outlier-synthesis')
 
-os.environ['NCCL_P2P_DISABLE'] = str(1) # Avoid deadlock in NCCL
-
 from utils.validation_dataset import validation_split
-from utils.out_dataset import RandomImages50k
 
 parser = argparse.ArgumentParser(description='Tunes a CIFAR Classifier with OE',
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -70,7 +67,6 @@ parser.add_argument('--r50', type=int, default=0)
 parser.add_argument('--godin', type=int, default=0)
 parser.add_argument('--deepaugment', type=int, default=0)
 parser.add_argument('--gpu', type=int, default=0)
-parser.add_argument('--apex', type=int, default=0)
 parser.add_argument('--additional_info', type=str, default='')
 parser.add_argument('--energy_weight', type=float, default=1)  # change this to 19.2 if you are using cifar-100.
 parser.add_argument('--seed', type=int, default=1, help='seed for np(tinyimages80M sampling); 1|2|8|100|107')
@@ -86,15 +82,6 @@ args = parser.parse_args()
 
 
 from resnet import ResNet_Model
-from CLIP_ft import CLIP_ft
-
-if args.apex:
-    # apex
-    from apex.parallel import DistributedDataParallel as DDP
-    from apex.fp16_utils import *
-    from apex import amp, optimizers
-    from apex.multi_tensor_apply import multi_tensor_applier
-    amp.register_float_function(torch, 'sigmoid')
 
 if args.score == 'OE':
     save_info = 'oe_tune'
@@ -113,9 +100,6 @@ np.random.seed(args.seed)
 
 traindir = os.path.join(os.path.expandvars("${TMPDIR}"), "imgnet_100_train")
 valdir = os.path.join(os.path.expandvars("${TMPDIR}"), "imgnet_100_val")
-
-# traindir = '/home/lars/Outliers/data/imgnet_val/'
-# valdir = '/home/lars/Outliers/data/imgnet_val/'
 
 
 if args.model == 'clip':
@@ -219,15 +203,6 @@ else:
 
 num_of_parameters = sum(map(torch.numel, net.parameters()))
 print(f"Trainable params: {num_of_parameters}")
-
-def recursion_change_bn(module):
-    if isinstance(module, torch.nn.BatchNorm2d):
-        module.track_running_stats = 1
-        module.num_batches_tracked = 0
-    else:
-        for i, (name, module1) in enumerate(module._modules.items()):
-            module1 = recursion_change_bn(module1)
-    return module
 
 
 # Restore model

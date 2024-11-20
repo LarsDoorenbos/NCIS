@@ -1,18 +1,15 @@
+
 import numpy as np
-import sys
 import os
 import platform
-import pickle
 import argparse
 import torch
-import torch.nn as nn
 import torchvision
 import torch.backends.cudnn as cudnn
 import torchvision.transforms as trn
 import torchvision.datasets as dset
 import torch.nn.functional as F
 from resnet import ResNet_Model
-from PIL import Image as PILImage
 
 if platform.node() == 'lars-HP-ENVY-Laptop-15-ep0xxx':
     OOD_PATH = "../data/"
@@ -21,8 +18,6 @@ else:
 
 # sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from utils.display_results import show_performance, get_measures, print_measures, print_measures_with_std
-import utils.svhn_loader as svhn
-import utils.lsun_loader as lsun_loader
 import utils.score_calculation as lib
 
 parser = argparse.ArgumentParser(description='Evaluates a CIFAR OOD Detector',
@@ -98,18 +93,20 @@ if args.load != '':
     if os.path.isfile(model_name):
         if 'energy' in model_name:
             weights = remove_data_parallel(torch.load(model_name))
-            # for item in list(weights.keys()):
-                # if len(item) > 0 and item[0] == '.':
-                #     weights['encoder' + item] = weights[item]
-                # elif item == 'ht':
-                #     weights['fc.weight'] = weights[item]
-                # elif item == '':
-                #     weights['fc.bias'] = weights[item]
-                # del weights[item]
+            for item in list(weights.keys()):
+                if len(item) > 0 and item[0] == '.':
+                    weights['encoder' + item] = weights[item]
+                elif item == 'ht':
+                    weights['fc.weight'] = weights[item]
+                elif item == '':
+                    weights['fc.bias'] = weights[item]
+                del weights[item]
             net.load_state_dict(weights)
         else:
             net.load_state_dict(remove_data_parallel(torch.load(model_name)))
         print('Model restored!')
+    else:
+        print('Model not found!')
 
 
 net.eval()

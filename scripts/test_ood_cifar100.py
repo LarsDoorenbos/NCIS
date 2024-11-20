@@ -10,7 +10,6 @@ import torchvision.transforms as trn
 import torchvision.datasets as dset
 import torch.nn.functional as F
 from resnet import ResNet_Model
-from PIL import Image as PILImage
 
 if platform.node() == 'lars-HP-ENVY-Laptop-15-ep0xxx':
     OOD_PATH = "../data/"
@@ -20,7 +19,6 @@ else:
 # sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from utils.display_results import show_performance, get_measures, print_measures, print_measures_with_std
 import utils.svhn_loader as svhn
-import utils.lsun_loader as lsun_loader
 import utils.score_calculation as lib
 
 parser = argparse.ArgumentParser(description='Evaluates a CIFAR OOD Detector',

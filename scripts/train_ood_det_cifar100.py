@@ -32,7 +32,7 @@ parser.add_argument('--model', '-m', type=str, default='wrn')
 parser.add_argument('--calibration', '-c', action='store_true',
                     help='Train a model to be used for calibration. This holds out some data for validation.')
 # Optimization options
-parser.add_argument('--epochs', '-e', type=int, default=200, help='Number of epochs to train.')
+parser.add_argument('--epochs', '-e', type=int, default=250, help='Number of epochs to train.')
 parser.add_argument('--learning_rate', '-lr', type=float, default=0.1, help='The initial learning rate.')
 parser.add_argument('--batch_size', '-b', type=int, default=256, help='Batch size.')
 parser.add_argument('--test_bs', type=int, default=200)
@@ -70,7 +70,7 @@ parser.add_argument('--r50', type=int, default=0)
 parser.add_argument('--vos', type=int, default=0)
 parser.add_argument('--gpu', type=int, default=0)
 parser.add_argument('--additional_info', type=str, default='')
-parser.add_argument('--energy_weight', type=float, default=2.5)
+parser.add_argument('--energy_weight', type=float, default=1)
 parser.add_argument('--seed', type=int, default=1, help='seed for np(tinyimages80M sampling); 1|2|8|100|107')
 
 # energy reg
@@ -176,16 +176,6 @@ elif args.model == 'vit':
     net = ResNet_Model(name='vit_b16', num_classes=num_classes)
 else:
     net = ResNet_Model(name='resnet34', num_classes=num_classes)
-
-
-def recursion_change_bn(module):
-    if isinstance(module, torch.nn.BatchNorm2d):
-        module.track_running_stats = 1
-        module.num_batches_tracked = 0
-    else:
-        for i, (name, module1) in enumerate(module._modules.items()):
-            module1 = recursion_change_bn(module1)
-    return module
 
 
 # Restore model
