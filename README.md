@@ -80,10 +80,10 @@ Our codebase builds on the [Dream-OOD](https://github.com/deeplearning-wisc/drea
 If you find this work helpful, consider citing it using
 
 ```
-@article{doorenbos2024learning,
-  title={Learning non-linear invariants for unsupervised out-of-distribution detection},
+@article{doorenbos2024non,
+  title={Non-Linear Outlier Synthesis for Out-of-Distribution Detection},
   author={Doorenbos, Lars and Sznitman, Raphael and M{\'a}rquez-Neila, Pablo},
-  journal={arXiv preprint arXiv:2407.04022},
+  journal={arXiv preprint arXiv:2411.13619},
   year={2024}
 }
 ```
